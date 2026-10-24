@@ -1,9 +1,10 @@
 """Listings, availability, bookings, pricing and payouts for a peer-to-peer GPU marketplace."""
+
 from __future__ import annotations
 
 import itertools
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 __all__ = ["Listing", "Booking", "Market", "BookingError", "PLATFORM_FEE"]
@@ -75,13 +76,24 @@ class Market:
         return self.listings[lid]
 
     def _free(self, lid, start, end):
-        return not any(b.listing_id == lid and b.status == "confirmed" and _overlaps(start, end, b.start, b.end)
-                       for b in self.bookings.values())
+        return not any(
+            b.listing_id == lid and b.status == "confirmed" and _overlaps(start, end, b.start, b.end)
+            for b in self.bookings.values()
+        )
 
-    def search(self, start: datetime, end: datetime, min_vram=0, gpu=None, region=None, max_price=None) -> list[Listing]:
-        res = [l for l in self.listings.values()
-               if l.vram_gb >= min_vram and (not gpu or gpu.lower() in l.gpu.lower()) and (not region or l.region == region)
-               and (max_price is None or l.hourly <= max_price) and l.available(start, end) and self._free(l.listing_id, start, end)]
+    def search(
+        self, start: datetime, end: datetime, min_vram=0, gpu=None, region=None, max_price=None
+    ) -> list[Listing]:
+        res = [
+            l
+            for l in self.listings.values()
+            if l.vram_gb >= min_vram
+            and (not gpu or gpu.lower() in l.gpu.lower())
+            and (not region or l.region == region)
+            and (max_price is None or l.hourly <= max_price)
+            and l.available(start, end)
+            and self._free(l.listing_id, start, end)
+        ]
         return sorted(res, key=lambda l: (l.hourly / l.reliability, -l.vram_gb))
 
     @staticmethod

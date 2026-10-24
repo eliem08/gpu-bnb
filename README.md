@@ -1,5 +1,7 @@
 # gpu-bnb
 
+[![CI](https://github.com/eliem08/gpu-bnb/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/gpu-bnb/actions/workflows/ci.yml)
+
 > **Airbnb for idle GPUs** — rent out computing power you're not using.
 
 Millions of gaming PCs and workstations sit idle 20 hours a day while
@@ -32,3 +34,25 @@ gpu-bnb demo
 - Host agent: container sandbox (gVisor/Kata), auto-pause when owner starts gaming
 - Verified hardware via gpu-carfax health reports
 - Spot-style dynamic pricing and job-level (not time-level) rentals
+
+## Development
+
+Zero runtime dependencies; Python 3.10+.
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+python -m unittest discover -s tests -t .           # unit + CLI smoke tests
+ruff check . && ruff format --check .               # lint + format
+```
+
+```
+gpu_bnb/core.py       domain logic (pure, importable, fully tested)
+gpu_bnb/__main__.py   CLI (`gpu-bnb ...` / `python -m gpu_bnb ...`)
+tests/                unit tests + generated CLI smoke tests
+```
+
+CI runs lint and tests on Ubuntu and Windows across Python 3.10, 3.12 and 3.13.
+Design, data model, trade-offs and production path: **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
+Part of the [agent-economy](https://github.com/eliem08/agent-economy) portfolio (idea #19).
