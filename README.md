@@ -46,7 +46,7 @@ Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless
 | **Host Pro** | $19 per month, 10% fee | Multi-GPU rigs; Reliability badge; Priority placement |
 | **Operator** | $999 per month | Run your own GPU marketplace; Custom fees; White label |
 
-To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+To start a trial or buy a plan, [request access](https://github.com/eliem08/gpu-bnb/issues/new?title=GPU%20BnB%20trial&labels=sales).
 
 ## Licence
 
