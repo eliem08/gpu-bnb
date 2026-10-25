@@ -43,6 +43,38 @@ class Tests(unittest.TestCase):
         self.assertEqual(self.m.payouts["lee"], 1.5)
         self.assertLess(self.always.reliability, 1.0)
 
+    def test_a_booking_pays_out_once_and_never_after_cancellation(self):
+        b = self.m.book(self.always.listing_id, "r", T0, T0 + timedelta(hours=4))
+        self.m.complete(b.booking_id)
+        with self.assertRaises(BookingError):
+            self.m.complete(b.booking_id)
+        self.assertEqual(self.m.payouts["lee"], 2.0)
+        c = self.m.book(self.always.listing_id, "r", T0 + timedelta(days=5), T0 + timedelta(days=5, hours=2))
+        self.m.cancel(c.booking_id, now=T0, by="host")
+        with self.assertRaises(BookingError):
+            self.m.complete(c.booking_id)
+        self.assertEqual(self.m.payouts["lee"], 2.0)
+
+    def test_interrupted_hours_must_be_within_the_booking(self):
+        b = self.m.book(self.always.listing_id, "r", T0, T0 + timedelta(hours=4))
+        for bad in (-10, 5, float("nan")):
+            with self.subTest(bad=bad), self.assertRaises(BookingError):
+                self.m.complete(b.booking_id, interrupted_hours=bad)
+        self.assertEqual(self.m.payouts["lee"], 0)
+
+    def test_multi_gpu_listing_takes_concurrent_bookings_up_to_count(self):
+        rig = self.m.list_gpu("kim", "H100", 80, 3.0, count=2)
+        self.m.book(rig.listing_id, "a", T0, T0 + timedelta(hours=2))
+        self.m.book(rig.listing_id, "b", T0, T0 + timedelta(hours=2))
+        with self.assertRaises(BookingError):
+            self.m.book(rig.listing_id, "c", T0, T0 + timedelta(hours=2))
+
+    def test_listing_validation(self):
+        for kw in ({"hourly": 0}, {"hourly": float("nan")}, {"hourly": -1}, {"count": 0}):
+            args = {"hourly": 1.0, "count": 1, **kw}
+            with self.subTest(kw=kw), self.assertRaises(BookingError):
+                self.m.list_gpu("x", "A100", 40, args["hourly"], count=args["count"])
+
 
 if __name__ == "__main__":
     unittest.main()

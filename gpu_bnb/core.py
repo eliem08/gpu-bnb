@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import itertools
+import math
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -71,15 +72,21 @@ class Market:
         self._ids = itertools.count(1)
 
     def list_gpu(self, host, gpu, vram_gb, hourly, region="us", count=1, windows=((0, 24),)) -> Listing:
+        if not (math.isfinite(hourly) and hourly > 0):
+            raise BookingError(f"hourly price must be a finite number > 0, got {hourly!r}")
+        if count < 1 or vram_gb < 0:
+            raise BookingError("need count >= 1 and vram_gb >= 0")
         lid = f"L{next(self._ids)}"
         self.listings[lid] = Listing(lid, host, gpu, vram_gb, count, hourly, region, list(windows))
         return self.listings[lid]
 
     def _free(self, lid, start, end):
-        return not any(
+        """A listing of `count` identical GPUs can carry that many overlapping bookings."""
+        busy = sum(
             b.listing_id == lid and b.status == "confirmed" and _overlaps(start, end, b.start, b.end)
             for b in self.bookings.values()
         )
+        return busy < self.listings[lid].count
 
     def search(
         self, start: datetime, end: datetime, min_vram=0, gpu=None, region=None, max_price=None
@@ -128,14 +135,20 @@ class Market:
         elif now < b.start:
             b.refund = round(b.total * 0.5, 2)
             self.payouts[self.listings[b.listing_id].host] += round(b.host_amount * 0.5, 2)
+        else:  # no-show after the slot started: the host held the GPU, so they are paid in full
+            self.payouts[self.listings[b.listing_id].host] += b.host_amount
         b.status = "cancelled"
         return b
 
     def complete(self, booking_id, interrupted_hours: float = 0.0) -> Booking:
         b = self.bookings[booking_id]
+        if b.status != "confirmed":
+            raise BookingError(f"booking is {b.status}; only a confirmed booking can be completed (and paid) once")
         l = self.listings[b.listing_id]
         hours = (b.end - b.start).total_seconds() / 3600
-        share = max(0.0, 1 - interrupted_hours / hours)
+        if not (math.isfinite(interrupted_hours) and 0 <= interrupted_hours <= hours):
+            raise BookingError(f"interrupted_hours must be between 0 and {hours:g}")
+        share = 1 - interrupted_hours / hours
         if interrupted_hours:
             l.failed += 1
             b.refund = round(b.total * (1 - share), 2)
