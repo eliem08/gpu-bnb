@@ -1,4 +1,4 @@
-"""Airbnb for idle GPUs: rent out computing power you are not using."""
+"""GPU BnB: Rent out the GPUs you are not using, by the hour."""
 
 from .core import *
 

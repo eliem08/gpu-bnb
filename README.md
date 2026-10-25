@@ -1,16 +1,43 @@
-# gpu-bnb
+<!-- sell-kit:start -->
+# GPU BnB
 
 [![CI](https://github.com/eliem08/gpu-bnb/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/gpu-bnb/actions/workflows/ci.yml)
 
-> **Airbnb for idle GPUs** — rent out computing power you're not using.
+> **Rent out the GPUs you are not using, by the hour.**
 
-Millions of gaming PCs and workstations sit idle 20 hours a day while
-researchers and indie AI builders queue for cloud GPUs. `gpu-bnb` is the
-marketplace engine: hosts list machines with availability windows, renters
-book time slots, the platform handles pricing, payouts, cancellations and
-reliability ratings.
+**Who it's for:** People and labs with idle GPUs, and the developers who need short bursts of compute.
 
-## What the MVP does
+**The problem:** Idle GPUs earn nothing, and renters can't easily find trustworthy short-term capacity.
+
+**What you get:** Listings with availability windows, overlap-safe booking for multi-GPU rigs, pricing and fees, cancellations and host reliability scores.
+
+## Quickstart
+
+Customers receive a release archive with the wheel and the examples. Python 3.10+ and no other dependencies.
+
+```bash
+pip install gpu_bnb-0.1.0-py3-none-any.whl
+gpu-bnb demo
+```
+
+## Pricing
+
+Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+
+| Plan | Price | Includes |
+|---|---|---|
+| **Host** | Free + 15% platform fee | List any GPU; Availability windows; Payouts |
+| **Host Pro** | $19 per month, 10% fee | Multi-GPU rigs; Reliability badge; Priority placement |
+| **Operator** | $999 per month | Run your own GPU marketplace; Custom fees; White label |
+
+To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+
+## Licence
+
+Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a paid plan or an active trial; see [LICENSE](LICENSE).
+<!-- sell-kit:end -->
+
+## What it does
 
 - **Listings**: GPU model, VRAM, count, hourly price, region, availability
   windows (recurring daily hours, e.g. 00:00–08:00 and 13:00–17:00)
@@ -32,7 +59,7 @@ gpu-bnb demo
 ## Roadmap
 
 - Host agent: container sandbox (gVisor/Kata), auto-pause when owner starts gaming
-- Verified hardware via gpu-carfax health reports
+- Verified hardware via gpuvitals health reports
 - Spot-style dynamic pricing and job-level (not time-level) rentals
 
 ## Development
