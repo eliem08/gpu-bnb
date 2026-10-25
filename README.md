@@ -17,8 +17,21 @@ Customers receive a release archive with the wheel and the examples. Python 3.10
 
 ```bash
 pip install gpu_bnb-0.1.0-py3-none-any.whl
+gpu-bnb search examples/listings.json --start 2026-11-01T01:00 --end 2026-11-01T04:00 --min-vram 24
 gpu-bnb demo
 ```
+
+## Web app and API
+
+Every command is also a JSON API endpoint and a browser form, served by the built-in web app.
+
+```bash
+gpu-bnb-web --port 8000          # then open http://127.0.0.1:8000
+docker build -t gpu-bnb . && docker run -p 8000:8000 -v gpu-bnb-data:/data gpu-bnb
+```
+
+Endpoints: `POST /api/demo`, `POST /api/search`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Pricing
 

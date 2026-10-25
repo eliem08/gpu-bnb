@@ -1,0 +1,18 @@
+[
+ {
+  "op": "search",
+  "payload": {
+   "listings": {
+    "name": "listings.json",
+    "content": "[\n  {\n    \"host\": \"sam\",\n    \"gpu\": \"RTX 4090\",\n    \"vram_gb\": 24,\n    \"hourly\": 1.0,\n    \"windows\": [\n      [\n        0,\n        8\n      ]\n    ]\n  },\n  {\n    \"host\": \"lee\",\n    \"gpu\": \"RTX 3090\",\n    \"vram_gb\": 24,\n    \"hourly\": 0.5\n  },\n  {\n    \"host\": \"kim\",\n    \"gpu\": \"H100\",\n    \"vram_gb\": 80,\n    \"hourly\": 3.0,\n    \"count\": 2\n  }\n]\n"
+   },
+   "start": "2026-11-01T01:00",
+   "end": "2026-11-01T04:00",
+   "min_vram": 24
+  }
+ },
+ {
+  "op": "demo",
+  "payload": {}
+ }
+]

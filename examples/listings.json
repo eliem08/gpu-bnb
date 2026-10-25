@@ -1,0 +1,27 @@
+[
+  {
+    "host": "sam",
+    "gpu": "RTX 4090",
+    "vram_gb": 24,
+    "hourly": 1.0,
+    "windows": [
+      [
+        0,
+        8
+      ]
+    ]
+  },
+  {
+    "host": "lee",
+    "gpu": "RTX 3090",
+    "vram_gb": 24,
+    "hourly": 0.5
+  },
+  {
+    "host": "kim",
+    "gpu": "H100",
+    "vram_gb": 80,
+    "hourly": 3.0,
+    "count": 2
+  }
+]

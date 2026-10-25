@@ -23,6 +23,7 @@ dev = ["ruff>=0.6"]
 
 [project.scripts]
 gpu-bnb = "gpu_bnb.__main__:main"
+gpu-bnb-web = "gpu_bnb.web:main"
 
 [project.urls]
 Repository = "https://github.com/eliem08/gpu-bnb"

@@ -4,6 +4,7 @@ import os
 import sys
 from datetime import datetime
 
+from .commands import add_commands, run
 from .core import BookingError, Market
 
 
@@ -27,11 +28,19 @@ def demo():
     print("Payouts:", dict(m.payouts))
 
 
-def _run(argv=None):
+def build_parser():
     ap = argparse.ArgumentParser(prog="gpu-bnb")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("demo")
-    ap.parse_args(argv)
+    add_commands(sub)
+    return ap
+
+
+def _run(argv=None):
+    ap = build_parser()
+    a = ap.parse_args(argv)
+    if a.cmd != "demo":
+        return run(a)
     demo()
     return 0
 
