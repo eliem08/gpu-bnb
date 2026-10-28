@@ -19,6 +19,9 @@ flowchart LR
   HostAgent -->|usage, interruptions| Market --> Payouts
 ```
 
+The host agent and sandbox in this diagram are roadmap, not shipped — this release is
+listings, search, booking, quotes, and payouts only.
+
 ## 3. Core invariants
 - No overlapping confirmed bookings per listing (`a0 < b1 and b0 < a1`).
 - Every booked hour falls inside the host's daily windows.
@@ -33,7 +36,9 @@ flowchart LR
   punished or over-trusted.
 - **Hour-granular windows** in the MVP. The product moves to calendar intervals with timezone support.
 
-## 5. Production architecture
+## 5. Future production architecture (not shipped)
+Not in this release — the items below are roadmap, not production architecture. This release is
+listings, search, booking, quotes, and payouts backed by local state, not the stack below.
 Postgres with an exclusion constraint (`EXCLUDE USING gist (listing_id WITH =, tstzrange(start,end) WITH &&)`)
 for double-booking safety at the DB level. A host agent runs workloads in gVisor/Kata with GPU
 passthrough. A relay (WireGuard) avoids exposing host IPs. Payments via Stripe Connect.
