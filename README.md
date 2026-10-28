@@ -41,26 +41,28 @@ Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}`
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/eliem08/gpu-bnb)
 
 `render.yaml` (one click, above) and `fly.toml` (`fly launch --copy-config`) both run the Dockerfile with a persistent `/data` volume and a `/healthz` check.
-To sell self-serve, set four variables and point a Stripe webhook at `https://<your-host>/billing/webhook` (events `checkout.session.completed` and `customer.subscription.deleted`):
+To sell self-serve, set four variables (see `.env.example` for the full list, names only) and point a Stripe webhook at `https://<your-host>/billing/webhook` (events `checkout.session.completed` and `customer.subscription.deleted`):
 
 | Variable | Example |
 |---|---|
 | `STRIPE_SECRET_KEY` | `sk_live_...` |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
-| `STRIPE_PRICES` | `team=price_123,business=price_456` |
+| `STRIPE_PRICES` | `host-pro=price_123,operator=price_456` |
 | `PUBLIC_URL` | `https://gpu-bnb.example.com` |
 
 Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key once on the success page. Cancelling the subscription revokes the key. A selling server always requires a key.
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Paid monthly plans (Host Pro, Operator) start with a 14-day free trial. Host is free and needs no checkout. Prices in USD, billed monthly unless noted.
 
 | Plan | Price | Includes |
 |---|---|---|
 | **Host** | Free + 15% platform fee | List any GPU; Availability windows; Payouts |
-| **Host Pro** | $19 per month, 10% fee | Multi-GPU rigs; Reliability badge; Priority placement |
-| **Operator** | $999 per month | Run your own GPU marketplace; Custom fees; White label |
+| **Host Pro** | $19 per month | Everything in Host |
+| **Operator** | $999 per month | Everything in Host |
+
+All plans unlock the same software in this release; higher tiers add licence scope and support, not gated features. The platform fee is 15% on every plan in this release. Multi-GPU rig listings, reliability badges, priority placement, running your own marketplace, custom fees, and white label are on the Roadmap below, not in this release.
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/gpu-bnb/issues/new?title=GPU%20BnB%20trial&labels=sales).
 
@@ -93,6 +95,8 @@ gpu-bnb demo
 - Host agent: container sandbox (gVisor/Kata), auto-pause when owner starts gaming
 - Verified hardware via gpuvitals health reports
 - Spot-style dynamic pricing and job-level (not time-level) rentals
+- Reliability badges and priority placement for higher tiers
+- Operator marketplace: run your own marketplace, custom fees, white label
 
 ## Development
 
