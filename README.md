@@ -17,8 +17,9 @@ Customers receive a release archive with the wheel and the examples. Python 3.10
 
 ```bash
 pip install gpu_bnb-0.1.0-py3-none-any.whl
-gpu-bnb search examples/listings.json --start 2026-11-01T01:00 --end 2026-11-01T04:00 --min-vram 24
-gpu-bnb demo
+gpu-bnb host-list maya --gpu "RTX 4090" --vram-gb 24 --hourly 0.6 --window 18-24 --store gpu-bnb.json
+gpu-bnb find --start 2026-12-01T18:00 --end 2026-12-01T22:00 --min-vram 24 --store gpu-bnb.json
+gpu-bnb book L1 sam --start 2026-12-01T18:00 --end 2026-12-01T22:00 --store gpu-bnb.json
 ```
 
 ## Web app and API
@@ -33,7 +34,7 @@ docker build -t gpu-bnb . && docker run -p 8000:8000 -e API_KEYS=sk_... -v gpu-b
 
 Every API call needs `Authorization: Bearer <key>` once any key exists; a server on a public address refuses to start without one. Calls are rate-limited per key (60/min, `--rate`) and metered: `gpu-bnb-web usage` prints calls per key for billing.
 
-Endpoints: `POST /api/demo`, `POST /api/search`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Endpoints: `POST /api/demo`, `POST /api/search`, `POST /api/host-list`, `POST /api/find`, `POST /api/book`, `POST /api/cancel`, `POST /api/complete`, `POST /api/listings`, `POST /api/bookings`, `POST /api/payouts`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
 Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Deploy and sell

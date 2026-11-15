@@ -1,5 +1,47 @@
 [
  {
+  "op": "host-list",
+  "payload": {
+   "host": "maya",
+   "gpu": "RTX 4090",
+   "vram_gb": 24,
+   "hourly": 0.6,
+   "region": "us",
+   "count": 1,
+   "window": [
+    "18-24"
+   ]
+  }
+ },
+ {
+  "op": "find",
+  "payload": {
+   "start": "2026-12-01T18:00",
+   "end": "2026-12-01T22:00",
+   "min_vram": 24
+  }
+ },
+ {
+  "op": "book",
+  "payload": {
+   "listing_id": "L1",
+   "renter": "sam",
+   "start": "2026-12-01T18:00",
+   "end": "2026-12-01T22:00"
+  }
+ },
+ {
+  "op": "complete",
+  "payload": {
+   "booking_id": "B2",
+   "interrupted_hours": 0.0
+  }
+ },
+ {
+  "op": "payouts",
+  "payload": {}
+ },
+ {
   "op": "search",
   "payload": {
    "listings": {
