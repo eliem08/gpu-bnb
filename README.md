@@ -55,15 +55,18 @@ Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key o
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Monthly plans start with a 14-day free trial. Prices in USD, billed monthly unless noted.
 
 | Plan | Price | Includes |
 |---|---|---|
 | **Host** | Free + 15% platform fee | List any GPU; Availability windows; Payouts |
-| **Host Pro** | $19 per month, 10% fee | Multi-GPU rigs; Reliability badge; Priority placement |
-| **Operator** | $999 per month | Run your own GPU marketplace; Custom fees; White label |
+| **Host Pro** | $19 per month, 10% fee | Multi-GPU listings; Reliability score |
+| **Operator** | $999 per month | Run your own GPU marketplace; Self-hosted deployment |
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/gpu-bnb/issues/new?title=GPU%20BnB%20trial&labels=sales).
+
+Plan note: every plan runs the same software, and every API key unlocks all of it. Seat, agent and volume
+limits are licence terms; the code does not enforce them. Support, SLA and done-for-you items are services.
 
 ## Licence
 
