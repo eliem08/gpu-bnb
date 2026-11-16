@@ -464,4 +464,24 @@ SPEC = {
             "id": "payouts",
         },
     ],
+    "plans": [
+        {
+            "key": "host",
+            "name": "Host",
+            "price": "Free, 15% platform fee",
+            "features": ["List any GPU", "Availability windows", "Payouts"],
+        },
+        {
+            "key": "host-pro",
+            "name": "Host Pro",
+            "price": "$19 per month, 10% fee",
+            "features": ["Multi-GPU listings", "Reliability score"],
+        },
+        {
+            "key": "operator",
+            "name": "Operator",
+            "price": "$999 per month",
+            "features": ["Run your own GPU marketplace", "Self-hosted deployment"],
+        },
+    ],
 }
