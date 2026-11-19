@@ -11,9 +11,10 @@ from collections import defaultdict
 from dataclasses import asdict
 from datetime import datetime
 
+from . import connect
 from .core import Booking, BookingError, Listing, Market
 
-OPS = ("host-list", "find", "book", "cancel", "complete", "listings", "bookings", "payouts")
+OPS = ("host-list", "find", "book", "cancel", "complete", "listings", "bookings", "payouts", *connect.COMMANDS)
 
 
 def when(text: str) -> datetime:
@@ -102,6 +103,7 @@ def add_ops(sub):
     sub.add_parser("listings", help="every listing with its reliability")
     sub.add_parser("bookings", help="every booking and its status")
     sub.add_parser("payouts", help="what each host is owed, and refunds due to renters")
+    connect.add_commands(sub)
     for name in OPS:
         sub.choices[name].add_argument("--store", default=store)
 
@@ -113,6 +115,8 @@ def _get(table: dict, key: str, what: str):
 
 
 def run_ops(a) -> int:
+    if a.cmd in connect.COMMANDS:
+        return connect.run_command(a, _earned, "gpu-bnb")
     try:
         m = load(a.store)
         _run(m, a)
@@ -173,3 +177,8 @@ def _run(m: Market, a):
         # an interruption refund returns its share of the fee too
         fees = sum(b.fee * (1 - b.refund / b.total) for b in m.bookings.values() if b.status == "completed")
         print(f"refunds due      ${refunds:,.2f}\nplatform fees    ${fees:,.2f}")
+
+
+def _earned(store: str) -> dict:
+    """Cumulative amounts owed to each host (the ledger only ever adds to them)."""
+    return {h: v for h, v in load(store).payouts.items() if v > 0}

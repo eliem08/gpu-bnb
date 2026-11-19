@@ -9,7 +9,7 @@
 
 **The problem:** Idle GPUs earn nothing, and renters can't easily find trustworthy short-term capacity.
 
-**What you get:** Listings with availability windows, overlap-safe booking for multi-GPU rigs, pricing and fees, cancellations and host reliability scores.
+**What you get:** Listings with availability windows, overlap-safe booking for multi-GPU rigs, pricing and fees, cancellations and host reliability scores. Payouts go to hosts through Stripe Connect, exactly once.
 
 ## Quickstart
 
@@ -34,7 +34,7 @@ docker build -t gpu-bnb . && docker run -p 8000:8000 -e API_KEYS=sk_... -v gpu-b
 
 Every API call needs `Authorization: Bearer <key>` once any key exists; a server on a public address refuses to start without one. Calls are rate-limited per key (60/min, `--rate`) and metered: `gpu-bnb-web usage` prints calls per key for billing.
 
-Endpoints: `POST /api/demo`, `POST /api/search`, `POST /api/host-list`, `POST /api/find`, `POST /api/book`, `POST /api/cancel`, `POST /api/complete`, `POST /api/listings`, `POST /api/bookings`, `POST /api/payouts`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Endpoints: `POST /api/demo`, `POST /api/search`, `POST /api/host-list`, `POST /api/find`, `POST /api/book`, `POST /api/cancel`, `POST /api/complete`, `POST /api/listings`, `POST /api/bookings`, `POST /api/payouts`, `POST /api/payee-onboard`, `POST /api/payee-status`, `POST /api/payout-send`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
 Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Deploy and sell
@@ -93,6 +93,30 @@ Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a pai
 pip install -e .
 gpu-bnb demo
 ```
+
+## Paying hosts through Stripe Connect
+
+The ledger says what is owed; these commands pay it:
+
+```bash
+gpu-bnb payee-onboard maya --email them@example.com   # creates a Stripe Express account, prints its onboarding link
+gpu-bnb payee-status maya                                # can that account receive transfers yet?
+gpu-bnb payout-send --dry-run                                  # who would be paid what
+gpu-bnb payout-send                                            # pay it
+```
+
+- `payout-send` transfers what each host is owed from completed rentals, less anything already sent.
+- Each transfer's Stripe idempotency key comes from the ledger's state, so running it twice, or retrying after a
+  timeout, never pays twice.
+- Payees still finishing Stripe's onboarding are skipped and named, and a failed transfer is reported, not
+  recorded.
+- Transfers are logged in `<store>.connect.json` beside the ledger.
+- Set `CONNECT_STRIPE_KEY` to the platform's Stripe secret key. It is kept apart from `STRIPE_SECRET_KEY`,
+  which the hosted server uses to sell its own plans. Also set `PUBLIC_URL`, where Stripe sends payees back
+  after onboarding.
+- Transfers draw on the platform's Stripe balance, so the buyers' money has to be collected there first
+  (Checkout, Payment Links or invoices). Stripe refuses a transfer the balance cannot cover.
+- It is built to Stripe's Connect API and tested against a stand-in, not yet against a live account.
 
 ## Roadmap
 
